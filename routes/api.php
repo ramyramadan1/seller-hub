@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ChannelController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\TenantStatusController;
 use Illuminate\Support\Facades\Route;
@@ -19,5 +20,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('tenant')->group(function () {
         Route::get('/products', [ProductController::class, 'index']);
         Route::post('/products', [ProductController::class, 'store']);
+
+        Route::get('/channels', [ChannelController::class, 'index']);
+        Route::post('/channels/{id}/test', [ChannelController::class, 'test'])->whereNumber('id');
+        Route::middleware('owner')->group(function () {
+            Route::post('/channels', [ChannelController::class, 'store']);
+            Route::delete('/channels/{id}', [ChannelController::class, 'destroy'])->whereNumber('id');
+        });
     });
 });

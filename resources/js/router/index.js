@@ -11,6 +11,7 @@ const routes = [
         meta: { auth: true, active: true },
         children: [
             { path: '', name: 'dashboard', component: () => import('../pages/Dashboard.vue') },
+            { path: 'channels', name: 'channels', component: () => import('../pages/Channels.vue') },
             { path: 'products', name: 'products', component: () => import('../pages/Products.vue') },
         ],
     },

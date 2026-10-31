@@ -10,7 +10,7 @@ const router = useRouter();
 const t = useT();
 const open = ref(false);
 
-const soon = ['nav.channels', 'nav.ai', 'nav.orders', 'nav.analytics', 'nav.settings'];
+const soon = ['nav.ai', 'nav.orders', 'nav.analytics', 'nav.settings'];
 
 async function logout() {
     await auth.logout();
@@ -24,6 +24,7 @@ async function logout() {
             <div class="fs-5 fw-bold mb-4 px-2">{{ t('app.name') }}</div>
             <ul class="nav flex-column gap-1" @click="open = false">
                 <li class="nav-item"><RouterLink class="nav-link" to="/">{{ t('nav.dashboard') }}</RouterLink></li>
+                <li class="nav-item"><RouterLink class="nav-link" to="/channels">{{ t('nav.channels') }}</RouterLink></li>
                 <li class="nav-item"><RouterLink class="nav-link" to="/products">{{ t('nav.products') }}</RouterLink></li>
                 <li v-for="key in soon" :key="key" class="nav-item">
                     <span class="nav-link disabled d-flex justify-content-between" :title="t('nav.soon')">{{ t(key) }}</span>
