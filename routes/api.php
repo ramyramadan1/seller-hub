@@ -20,6 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('tenant')->group(function () {
         Route::get('/products', [ProductController::class, 'index']);
         Route::post('/products', [ProductController::class, 'store']);
+        Route::post('/products/publish', [ProductController::class, 'publish']);
+        Route::get('/products/{id}', [ProductController::class, 'show'])->whereNumber('id');
+        Route::put('/products/{id}', [ProductController::class, 'update'])->whereNumber('id');
+        Route::delete('/products/{id}', [ProductController::class, 'destroy'])->whereNumber('id');
 
         Route::get('/channels', [ChannelController::class, 'index']);
         Route::post('/channels/{id}/test', [ChannelController::class, 'test'])->whereNumber('id');

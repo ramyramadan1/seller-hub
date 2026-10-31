@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 /**
  * WooCommerce REST API v3. The store owner pastes the store URL plus a consumer key/secret
@@ -54,12 +55,23 @@ class WooCommerceDriver implements ChannelDriver
 
     public function pushProduct(Channel $channel, Product $product): string
     {
-        throw new ChannelException('Publishing products to WooCommerce is added in phase 3.');
+        $response = $this->send(fn () => $this->client($channel)->post('products', $this->payload($product)));
+
+        $id = $response->json('id');
+        if (! $id) {
+            throw new ChannelException('WooCommerce did not return a product id.');
+        }
+
+        return (string) $id;
     }
 
-    public function updateProduct(Channel $channel, Product $product): void
+    public function updateProduct(Channel $channel, Product $product, ?string $externalId = null): void
     {
-        throw new ChannelException('Updating products on WooCommerce is added in phase 3.');
+        if (! $externalId) {
+            throw new ChannelException('This product has no WooCommerce id yet.');
+        }
+
+        $this->send(fn () => $this->client($channel)->put('products/'.rawurlencode($externalId), $this->payload($product)));
     }
 
     public function fetchOrders(Channel $channel, ?Carbon $since): iterable
@@ -87,5 +99,56 @@ class WooCommerceDriver implements ChannelDriver
             ->acceptJson()
             ->timeout(15)
             ->retry(2, 300, fn ($e) => $e instanceof ConnectionException, throw: false);
+    }
+
+    /** Map our product to the WooCommerce v3 product body. Only public https image URLs can be sent. */
+    private function payload(Product $p): array
+    {
+        $images = collect($p->images ?? [])
+            ->filter(fn ($u) => is_string($u) && str_starts_with($u, 'https://'))
+            ->map(fn ($u) => ['src' => $u])->values()->all();
+
+        $body = [
+            'name' => $p->title,
+            'type' => 'simple',
+            'regular_price' => number_format((float) $p->price, 2, '.', ''),
+            'description' => (string) $p->description,
+            'manage_stock' => true,
+            'stock_quantity' => (int) $p->stock,
+        ];
+
+        if ($p->sku) {
+            $body['sku'] = $p->sku;
+        }
+        if ($images) {
+            $body['images'] = $images;
+        }
+
+        return $body;
+    }
+
+    /** Run a request and turn HTTP/network failures into ChannelException (retryable for 429/5xx/network). */
+    private function send(callable $request): \Illuminate\Http\Client\Response
+    {
+        try {
+            $response = $request();
+        } catch (ConnectionException) {
+            throw new ChannelException('Could not reach the store.', retryable: true);
+        }
+
+        if (in_array($response->status(), [401, 403], true)) {
+            throw new ChannelException('WooCommerce rejected the keys. Reconnect the channel.', needsReauth: true);
+        }
+
+        if ($response->status() === 429 || $response->serverError()) {
+            throw new ChannelException("WooCommerce is busy or failing (HTTP {$response->status()}).", retryable: true);
+        }
+
+        if (! $response->successful()) {
+            $why = Str::limit((string) $response->json('message'), 200);
+            throw new ChannelException('WooCommerce refused the product'.($why ? ": {$why}" : '.'));
+        }
+
+        return $response;
     }
 }

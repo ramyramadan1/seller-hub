@@ -22,7 +22,7 @@ interface ChannelDriver
     /** @return string the product's external id on the platform */
     public function pushProduct(Channel $channel, Product $product): string;
 
-    public function updateProduct(Channel $channel, Product $product): void;
+    public function updateProduct(Channel $channel, Product $product, ?string $externalId = null): void;
 
     /** @return iterable<OrderDTO> */
     public function fetchOrders(Channel $channel, ?Carbon $since): iterable;

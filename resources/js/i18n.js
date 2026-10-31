@@ -24,6 +24,11 @@ const messages = {
         'channels.test_failed': 'Connection failed.', 'channels.confirm_remove': 'Disconnect this channel? Products and orders already imported stay in Seller Hub.',
         'channels.status.connected': 'Connected', 'channels.status.pending': 'Pending', 'channels.status.needs_reauth': 'Needs re-authorization', 'channels.status.error': 'Error',
         'platform.woocommerce': 'WooCommerce', 'platform.shopify': 'Shopify', 'platform.salla': 'Salla', 'platform.zid': 'Zid', 'platform.amazon': 'Amazon',
+        'products.edit': 'Edit', 'products.delete': 'Delete', 'products.publish': 'Publish to…', 'products.channels': 'Channels',
+        'products.confirm_delete': 'Delete this product from Seller Hub? It is not removed from your sales channels.',
+        'products.publish_queued': 'Publishing started. Status updates below.', 'products.no_channels': 'Connect a channel first (Channels page).',
+        'products.publish_help': 'Already-published products are updated on the channel instead of duplicated.',
+        'products.sync.synced': 'Published', 'products.sync.pending': 'Publishing…', 'products.sync.failed': 'Failed',
         'common.loading': 'Loading…', 'common.cancel': 'Cancel',
     },
     ar: {
@@ -49,6 +54,11 @@ const messages = {
         'channels.test_failed': 'فشل الاتصال.', 'channels.confirm_remove': 'فصل هذه القناة؟ تبقى المنتجات والطلبات المستوردة في سيلر هب.',
         'channels.status.connected': 'متصل', 'channels.status.pending': 'قيد الانتظار', 'channels.status.needs_reauth': 'يحتاج إعادة تفويض', 'channels.status.error': 'خطأ',
         'platform.woocommerce': 'ووكومرس', 'platform.shopify': 'شوبيفاي', 'platform.salla': 'سلة', 'platform.zid': 'زد', 'platform.amazon': 'أمازون',
+        'products.edit': 'تعديل', 'products.delete': 'حذف', 'products.publish': 'نشر إلى…', 'products.channels': 'القنوات',
+        'products.confirm_delete': 'حذف هذا المنتج من سيلر هب؟ لن يُحذف من قنوات البيع.',
+        'products.publish_queued': 'بدأ النشر. ستتحدث الحالة أدناه.', 'products.no_channels': 'اربط قناة أولاً (صفحة القنوات).',
+        'products.publish_help': 'المنتجات المنشورة سابقاً تُحدَّث في القناة بدل تكرارها.',
+        'products.sync.synced': 'منشور', 'products.sync.pending': 'جارٍ النشر…', 'products.sync.failed': 'فشل',
         'common.loading': 'جارٍ التحميل…', 'common.cancel': 'إلغاء',
     },
 };

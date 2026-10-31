@@ -21,5 +21,23 @@ export const useProductsStore = defineStore('products', {
 
             return data;
         },
+        async update(id, payload) {
+            const { data } = await api.put(`/products/${id}`, payload);
+            const i = this.items.findIndex((p) => p.id === id);
+            if (i >= 0) this.items[i] = data;
+
+            return data;
+        },
+        async remove(id) {
+            await api.delete(`/products/${id}`);
+            this.items = this.items.filter((p) => p.id !== id);
+            this.total -= 1;
+        },
+        /** Queues one job per product and channel; the list is reloaded to show pending/synced/failed. */
+        async publish(productIds, channelIds) {
+            const { data } = await api.post('/products/publish', { product_ids: productIds, channel_ids: channelIds });
+
+            return data;
+        },
     },
 });

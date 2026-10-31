@@ -12,7 +12,7 @@ The full build plan is in [`docs/SELLER_HUB_PLAN.md`](docs/SELLER_HUB_PLAN.md).
 |---|---|---|
 | 1 | Foundation: scaffold, tenancy (database per store), Sanctum auth, `SetTenant`, store registration + provisioning, SPA shell, isolation tests | **Implemented** |
 | 2 | Channels + WooCommerce driver (connect, test connection, disconnect, `ChannelManager`) | **Implemented, tests not yet run** |
-| 3 | Products CRUD + publish jobs | Planned |
+| 3 | Products CRUD + publish jobs (`product_channel` status per channel) | **Implemented, tests not yet run** |
 | 4 | Orders sync + dashboard KPIs | Planned |
 | 5 | AI accounts + AI Studio + credits | Planned |
 | 6 | Analytics + cost entries | Planned |
@@ -80,6 +80,8 @@ Add the migration under `database/migrations/tenant/` (never edit one that alrea
 | GET | `/api/channels` | Connected channels (no secrets) + available drivers |
 | POST | `/api/channels` | Owner only. WooCommerce: `store_url`, `consumer_key`, `consumer_secret`. Tested before saving |
 | POST | `/api/channels/{id}/test` | Re-test; sets `connected` / `needs_reauth` / `error` |
+| GET, PUT, DELETE | `/api/products/{id}` | Show / update / delete (deleting does not touch the sales channels) |
+| POST | `/api/products/publish` | `{product_ids, channel_ids}` → queues one `PublishProductToChannel` job per pair (queue `publish`); re-publishing updates instead of duplicating |
 | DELETE | `/api/channels/{id}` | Owner only; also removes the central `channel_routes` row |
 
 ## Notes

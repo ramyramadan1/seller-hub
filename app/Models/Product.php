@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /** Lives in the tenant database (no tenant_id column: the database is the boundary). */
 class Product extends Model
@@ -15,4 +16,9 @@ class Product extends Model
         'stock' => 'integer',
         'images' => 'array',
     ];
+
+    public function channelLinks(): HasMany
+    {
+        return $this->hasMany(ProductChannel::class);
+    }
 }
