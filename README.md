@@ -11,7 +11,7 @@ The full build plan is in [`docs/SELLER_HUB_PLAN.md`](docs/SELLER_HUB_PLAN.md).
 | Phase | Scope | State |
 |---|---|---|
 | 1 | Foundation: scaffold, tenancy (database per store), Sanctum auth, `SetTenant`, store registration + provisioning, SPA shell, isolation tests | **Implemented** |
-| 2 | Channels + WooCommerce driver | Planned |
+| 2 | Channels + WooCommerce driver (connect, test connection, disconnect, `ChannelManager`) | **Implemented, tests not yet run** |
 | 3 | Products CRUD + publish jobs | Planned |
 | 4 | Orders sync + dashboard KPIs | Planned |
 | 5 | AI accounts + AI Studio + credits | Planned |
@@ -77,6 +77,10 @@ Add the migration under `database/migrations/tenant/` (never edit one that alrea
 | GET | `/api/tenant/status` | `provisioning` / `active` / `failed` / `suspended` |
 | POST | `/api/tenant/retry` | Owner only, only for a `failed` store |
 | GET, POST | `/api/products` | Tenant route (409 until the store is active) |
+| GET | `/api/channels` | Connected channels (no secrets) + available drivers |
+| POST | `/api/channels` | Owner only. WooCommerce: `store_url`, `consumer_key`, `consumer_secret`. Tested before saving |
+| POST | `/api/channels/{id}/test` | Re-test; sets `connected` / `needs_reauth` / `error` |
+| DELETE | `/api/channels/{id}` | Owner only; also removes the central `channel_routes` row |
 
 ## Notes
 
